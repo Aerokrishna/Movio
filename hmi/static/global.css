@@ -1,0 +1,105 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    font-family: sans-serif;
+}
+
+.button {
+    text-decoration: none;
+    color: black;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 500;
+    padding: 10px;
+    width: 200px;
+    border: 1px solid black;
+    background-color: skyblue;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+.loader {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+.status {
+  position: absolute;
+  width: 200px;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.status a {
+    color: black;
+    text-decoration: none;
+}
+
+.status a div {
+    border-radius: 5px;
+    border: 1px solid black;
+    background-color: lightgrey;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 10px;
+}
+
+.status div .error-indicator,
+.status div .running-indicator,
+.status div .idle-indicator {
+    display: none;
+}
+
+.status div.running {
+    background-color: rgb(196, 255, 196);
+    border: 2px solid green;
+}
+
+.status div.running .running-indicator {
+    display: block;
+}
+
+.status div.error {
+    background-color: rgb(250, 166, 166);
+    border: 2px solid red;
+}
+.status div.error .error-indicator {
+    display: block;
+}
+
+.status div.idle {
+    display: none;
+}
+
+.status div img {
+    width: 20px;
+}
+
+
+.hidden {
+    display: none !important;
+}

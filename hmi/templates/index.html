@@ -1,0 +1,24 @@
+{% extends "layouts/base.html" %}
+
+{% block head %}
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            margin-top: 200px;
+        }
+
+        .container {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <a class="button" href="/prod">Prod</a>
+        <a class="button" href="/mod">Mod</a>
+    </div>
+{% endblock %}

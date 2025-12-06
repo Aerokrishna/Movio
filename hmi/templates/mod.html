@@ -1,0 +1,57 @@
+{% extends "layouts/base_with_status.html" %}
+
+{% block head %}
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 200px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: stretch;
+            gap: 10px;
+        }
+
+        .container a {
+            border: 1px solid black;
+            background-color: skyblue;
+            border-radius: 5px;
+            cursor: pointer;
+            color: black;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 50px 10px;
+            width: 350px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <a href="/mod/teleop">
+            TELEOP
+        </a>
+        <a href="/mod/map">
+            MAPPING
+        </a>
+        <a href="/mod/pose">
+            NAV-TO-POSE
+        </a>
+        <a href="/mod/nomap">
+            NAV WITHOUT MAP
+        </a>
+    </div>
+{% endblock %}

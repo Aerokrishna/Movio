@@ -1,0 +1,157 @@
+{% extends "layouts/base_with_status.html" %}
+
+{% block head %}
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 200px;
+        }
+
+        .container .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container button {
+            border: 1px solid black;
+            background-color: skyblue;
+            border-radius: 5px;
+            cursor: pointer;
+            color: black;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 50px 10px;
+            width: 350px;
+        }
+
+        #maps-list {
+            display: flex;
+            max-width: 1200px;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            padding: 10px;
+            margin-bottom: 30px;
+        }
+
+        #maps-list img {
+            width: 250px;
+            border-radius: 5px;
+        }
+
+        #maps-list img.selected {
+            border: 1px solid black;
+        }
+
+        #map-selected {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div id="start-pose">
+            <div id="maps-list"></div>
+            <div id="map-selected"></div>
+            <div class="buttons">
+                <button id="start-button">
+                    START NODE
+                </button>
+            </div>
+        </div>
+        <div id="stop-pose" class="hidden">
+            <div id="map-display"></div>
+            <div class="buttons">
+                <button id="nav-button">
+                    NAV TO POSE
+                </button>
+                <button id="stop-button">
+                    STOP NODE
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let start_pose = document.querySelector('#start-pose')
+        let stop_pose = document.querySelector('#stop-pose')
+
+        let start_button = document.querySelector("#start-button")
+        let stop_button = document.querySelector("#stop-button")
+
+        let maps_list = document.querySelector('#maps-list')
+        let map_selected = document.querySelector('#map-selected')
+        let currently_selected = -1
+        let maps = []
+
+        async function fetch_maps () {
+            let res = await fetch("/actions/pose/list")
+            if (!res.ok) {
+                console.log("Error fetching maps")
+                return
+            }
+            let data = await res.json()
+            maps = data.maps
+
+            for (let i=0 ; i<maps.length ; i++) {
+                let map_image = document.createElement('img')
+                map_image.src = `/static/maps/${maps[i]}`
+                map_image.addEventListener("click", () => {
+                    if (currently_selected != -1)
+                        maps_list.children[currently_selected].classList.remove("selected")
+                    maps_list.children[i].classList.add("selected")
+                    currently_selected = i
+                    map_selected.innerHTML = maps[i]
+                })
+                maps_list.appendChild(map_image)
+            }
+        }
+
+        start_button.addEventListener("click", async () => {
+            if (currently_selected == -1) {
+                alert("No map selected")
+                return
+            }
+            let res = await fetch(`/actions/pose/start?map=${maps[currently_selected]}`)
+            if (!res.ok) {
+                console.log("Error starting Nav-to-Pose")
+                return
+            }
+        })
+        
+        stop_button.addEventListener("click", async () => {
+            let res = await fetch("/actions/pose/stop")
+            if (!res.ok) {
+                console.log("Error stopping Nav-to-Pose")
+                return
+            }
+        })
+
+
+        fetch_maps()
+
+        setInterval(() => {
+            if (status[2] == 1) {
+                start_pose.classList.add("hidden")
+                stop_pose.classList.remove("hidden")
+            }
+            else {
+                start_pose.classList.remove("hidden")
+                stop_pose.classList.add("hidden")
+            }
+        }, 100)
+    </script>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "layouts/base.html" %}
+
+
+{% block body %}
+    <div class="status">
+        <a href="/mod/teleop">
+            <div id="status-teleop" class="idle">
+                <img class="idle-indicator" src="/static/icons/ellipsis.svg" alt="">
+                <img class="running-indicator" src="/static/icons/play.svg" alt="">
+                <img class="error-indicator" src="/static/icons/octagon-x.svg" alt="">
+                Teleop
+            </div>
+        </a>
+        <a href="/mod/map">
+            <div id="status-map" class="idle">
+                <img class="idle-indicator" src="/static/icons/ellipsis.svg" alt="">
+                <img class="running-indicator" src="/static/icons/play.svg" alt="">
+                <img class="error-indicator" src="/static/icons/octagon-x.svg" alt="">
+                Map
+            </div>
+        </a>
+        <a href="/mod/pose">
+            <div id="status-pose" class="idle">
+                <img class="idle-indicator" src="/static/icons/ellipsis.svg" alt="">
+                <img class="running-indicator" src="/static/icons/play.svg" alt="">
+                <img class="error-indicator" src="/static/icons/octagon-x.svg" alt="">
+                Nav to Pose
+            </div>
+        </a>
+        <a href="/mod/nomap">
+            <div id="status-nomap" class="idle">
+                <img class="idle-indicator" src="/static/icons/ellipsis.svg" alt="">
+                <img class="running-indicator" src="/static/icons/play.svg" alt="">
+                <img class="error-indicator" src="/static/icons/octagon-x.svg" alt="">
+                Nav without Map
+            </div>
+        </a>
+    </div>
+
+
+    <script>
+        let status = [0,0,0,0]
+        let status_elements = [
+            document.querySelector("#status-teleop"),
+            document.querySelector("#status-map"),
+            document.querySelector("#status-pose"),
+            document.querySelector("#status-nomap")
+        ]
+
+        function refresh_statuses () {
+            function set_status (element, status) {
+                if (status == 0) {
+                    element.className = "idle"
+                } else if (status == 1) {
+                    element.className = "running"
+                } else if (status == 2) {
+                    element.className = "error"
+                }
+            }
+
+            fetch("/status")
+            .then(res => {
+                if (res.ok) return res.json()
+                throw Error(res)
+            })
+            .then(data => {
+                status = data.status
+                for (let i=0 ; i<status.length ; i++) {
+                    set_status(status_elements[i], status[i])
+                }
+            })
+            .catch(err => {
+                console.log("Erorr fetching statuses: ", err)
+            })
+        }
+
+        setInterval(refresh_statuses, 1000);
+    </script>
+
+
+    {% block content %}{% endblock %}
+{% endblock %}

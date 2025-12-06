@@ -1,0 +1,86 @@
+{% extends "layouts/base_with_status.html" %}
+
+{% block head %}
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 200px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container button {
+            border: 1px solid black;
+            background-color: skyblue;
+            border-radius: 5px;
+            cursor: pointer;
+            color: black;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 50px 10px;
+            width: 350px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <button id="start-teleop">
+            START TELEOP
+        </button>
+        <button id="stop-teleop" class="hidden">
+            STOP TELEOP
+        </button>
+    </div>
+
+
+    <script>
+        let start_teleop_button = document.querySelector("#start-teleop")
+        let stop_teleop_button = document.querySelector("#stop-teleop")
+
+        start_teleop_button.addEventListener("click", async () => {
+            let res = await fetch("/actions/teleop/start")
+            if (res.ok) {
+                console.log("Teleop started")
+            } else {
+                console.log("Error starting teleop: ", await res.json())
+            }
+        })
+
+        stop_teleop_button.addEventListener("click", async () => {
+            let res = await fetch("/actions/teleop/stop")
+            if (res.ok) {
+                console.log("Teleop stopped")
+            } else {
+                console.log("Error stopping teleop: ", await res.json())
+            }
+        })
+
+        setInterval(() => {
+            if (status[0] == 1) {
+                start_teleop_button.classList.add("hidden")
+                stop_teleop_button.classList.remove("hidden")
+            }
+            else {
+                start_teleop_button.classList.remove("hidden")
+                stop_teleop_button.classList.add("hidden")
+            }
+        }, 100)
+    </script>
+{% endblock %}
